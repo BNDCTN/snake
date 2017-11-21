@@ -1,398 +1,331 @@
 
-		var game = new Vue({
-			el: '#score',
-			created:function(){
-				this.TimeIncrement();
-			},
-			data:{
-				lifes: -1,
-				level: 0,
-				scores: 0,
-				time: 0,
-				play: true
-			},
-			computed:{
-				ScoreStyle: function (currentBrick){
-					if(this.lifes>=0 && this.play)
-			 	return {
-			 				left: "2%",
-		    				top: "2%",
-		    				width: "96%",
-		    				//height: document.clientHeight*0.5 + "px"	
-						}
-						else{
-							return {	
-							left: "25%",
-		    				top: "25%",
-		    				width: "50%",
-		    				height: "50%",
-						}
-					}
-				}		  		
-			},
-			methods:{
-				Restart:function(){
-					this.level=0;
-					this.lifes=3;
-					this.scores=0;
-					this.time=0;
-					this.play=true;
+	const a = 35;
+	var lenX = parseInt(document.body.clientWidth/35/3*2);		
+	var lenY = parseInt(document.body.clientHeight/35/3*2);
 
-					bricks.bricksAmount=16;
-					bricks.speed=5;
-					bricks.ResetBricks();
-					ball.BallReset();
-					this.TimeIncrement();
-				},
-				TimeIncrement:function(){
-					if (this.play && this.lifes>=0){
-					this.time++;
-					setTimeout(this.TimeIncrement, 1000);
-					}
-				},
-				NextLevel:function(){
-					this.level+=1;
-					this.lifes=3;
-					this.scores=0;
-					this.time=0;
-					this.play=true;
-					ball.BallReset();
-					if(this.level%3==0) bricks.bricksAmount +=8;
-					if(this.level%2==0) bricks.speed++;
-					bricks.ResetBricks();						
-					this.TimeIncrement();
+	var progressbar = new Vue({
+		el: "#progressbar",
+		data:{
+			percent: 0,
+			sleep: 30000,
+		},
+		created:function(){
+			this.StartTimer();
+		},
+		computed:{
+			ProgBarStyle:function(){
+				return {
+					width: this.percent + '%'
 				}
 			}
-		});
-	
-		var bricks = new Vue({
-		  el: '#bricksblock',
-		  created: function(){
-		  		this.EnterBricks();
-		  	},
-
-		  data: {
-		  	x: 0.0,
-		  	y: 0.0,
-
-		  	margin: 1,
-		  	speed: 5,
-		  	bricksAmount: 16,
-		  	bricks: []
-		  
-		  },
-		  computed: {
-		  		brickWidth: function(){
-		  			return (document.getElementById('bricksblock').clientWidth - 9)*(this.margin/8);
-		  		},
-		  		brickHeight: function(){
-		  			return (document.getElementById('bricksblock').clientHeight * 0.1);
-		  		},
-		  		Punched: function(){
-
-				},		
-		  },
-		  methods: {
-		  	Style: function (currentBrick){
-			 	return {	left: currentBrick.X + "px",
-		    				top: currentBrick.Y + "px",
-		    				width: currentBrick.width + "px",
-		    				height: currentBrick.height + "px"
-						}
-		  		},
-		  	SetBricks:function (){
-		  		var block = document.getElementById('bricksblock');
-		  		this.x=this.margin;
-		  		this.y=this.margin;
-
-		  		for (var i=0; i<this.bricksAmount; i++){
-		  			if (i>0 && i%8==0) { 
-		  				this.y+=this.brickHeight+this.margin;
-		  				this.x=this.margin;
-		  			}
-		  		this.bricks.push({ 
-		  			id: i, 
-		  			X: this.x, 
-		  			Y: this.y, 
-		  			width: this.brickWidth, 
-		  			height: this.brickHeight, 
-		  			credits: 1,
-		  			visible: true
-		  		}); 		
-			  		this.x+=this.brickWidth+this.margin;
-		  		}
-		  		this.MoveSegment();
-		  	},
-		  	ResetBricks:function(){
-		  			document.getElementById('bricksblock').style.top = "10%";
-		  			this.bricks=[];
-		  			this.EnterBricks();
-		  	},
-		  	EnterBricks: function(){
-		  		this.SetBricks();
-  				for (var i=0; i<this.bricks.length; i++){
-  					document.getElementById(this.bricks[i].id).innerHTML = "";
-		  			document.getElementById(this.bricks[i].id).className = "brick";
-		  		}
-		  	},
-		  	MoveSegment: function(){
-		  		var claster = document.getElementById('bricksblock');
-		  		var rocket = document.getElementById('playrocket');
-		  		if (claster.offsetTop+claster.clientHeight>=playrocket.offsetTop) game.lifes=-1;
-		  		document.getElementById('bricksblock').style.top = claster.offsetTop + 1 +"px";
-		  		if (game.lifes>=0 && game.play==true)
-		  		setTimeout(this.MoveSegment, 1000/this.speed);
-		  	},
-		  	CorrectBricks:function (){
-			var blockSegment = document.getElementById('bricksblock');
-			var currBricksArr = document.getElementsByClassName('brick');
-		  		this.x=this.margin;
-		  		this.y=this.margin;
-			for(var i=0; i<currBricksArr.length; i++){
-				if (this.x>=
-					document.getElementById('bricksblock').clientWidth)
-					this.x=this.margin;
-					currBricksArr[i].style.width = (blockSegment.clientWidth - 9)*(this.margin/8)+"px";
-					currBricksArr[i].style.left = this.x + "px";
-					this.x+=(blockSegment.clientWidth - 9)*(this.margin/8)+this.margin;
-		  		}
-		  	},
-		  	DestroyBrick: function(b){
-		  	var index = this.bricks.indexOf(b);
-		  	this.BlowEffect(this.bricks[index]);
-		  	this.HideBrick(this.bricks[index]);
-		  	var blank = true;
-		  	for (var i=0; i<bricks.bricks.length; i++)
-		  		if (bricks.bricks[i].visible==true) blank=false;
-
-		  	if (blank==true) game.play=false;
-			//this.bricks.splice(index,1);
-		  	},
-		  	BlowEffect:function (b){
-		  		var index = this.bricks.indexOf(b);
-		  		var brick = document.getElementById(b.id);
-		  		brick.innerHTML="+"+b.credits;
-		  		game.scores+=b.credits;
-		  		brick.className="brick blowed";
-		  		if (index>0  && index%8!==0 && this.bricks[index-1].visible == true) {
-		  			document.getElementById(index-1).className = "brick hitedleft";
-		  			document.getElementById(index-1).style.top = document.getElementById(index-1).offsetTop - 3 + "px";
-		  			setTimeout(function(){
-		  			document.getElementById(index-1).className = "brick";
-		  			document.getElementById(index-1).style.top = document.getElementById(index-1).offsetTop + 3 + "px";
-		  			}, 300);
-		  		}
-		  		if (index<this.bricks.length-1  && index%7!==0 && this.bricks[index+1].visible == true) {
-		  			document.getElementById(index+1).className = "brick hitedright";
-		  			document.getElementById(index+1).style.top = document.getElementById(index+1).offsetTop - 3 + "px";
-					setTimeout(function(){
-		  			document.getElementById(index+1).className = "brick";
-					document.getElementById(index+1).style.top = document.getElementById(index+1).offsetTop + 3 + "px";
-		  		}, 300);
-		  		}
-		  		if (index>8 && this.bricks[index-8].visible == true) {
-		  			document.getElementById(index-8).className = "brick hitedup";
-		  			document.getElementById(index-8).style.top = document.getElementById(index-8).offsetTop - 5 + "px";
-		  			setTimeout(function(){
-		  			document.getElementById(index-8).className = "brick";
-		  			document.getElementById(index-8).style.top = document.getElementById(index-8).offsetTop + 5 + "px";
-		  			}, 300);
-		  		}
-		  		if (index>8 && index%8!==0 && this.bricks[index-9].visible == true) {
-		  			document.getElementById(index-9).className = "brick hitedleft";
-		  			document.getElementById(index-9).style.top = document.getElementById(index-9).offsetTop - 1 + "px";
-		  			setTimeout(function(){
-		  			document.getElementById(index-9).className = "brick";
-		  			document.getElementById(index-9).style.top = document.getElementById(index-9).offsetTop + 1 + "px";
-		  			}, 300);
-		  		}
-		  		if (index>8 && index%7!==0 && this.bricks[index-7].visible == true) {
-		  			document.getElementById(index-7).className = "brick hitedright";
-		  			document.getElementById(index-7).style.top = document.getElementById(index-7).offsetTop - 1 + "px";
-		  			setTimeout(function(){
-		  			document.getElementById(index-7).className = "brick";
-		  			document.getElementById(index-7).style.top = document.getElementById(index-7).offsetTop + 1 + "px";
-		  			}, 300);
-		  		} 		
-		  	},
-		  	HideBrick:function(brick){
-		  		brick.visible = false;
-		  	}
-
-		  }
-
-		});
-
-		var ball = new Vue({
-		  el: '#playball',
-  			created: function(){
-		  		this.Move();
-		  	},
-		  data: {
-		    message: "true",
-
-		    X:50,
-		    Y:300,
-		    heigth:30,
-		    width:30,
-
-		    landslideX: 2.0,
-		    landslideY: 3.0,
-		    slideStep: 0.5,
-
-		    right: 1,
-		    down: true
-		  },
-		  computed: {
-			Style: function (){
-			 	return {	left: this.X + "px",
-		    				top: this.Y + "px"	}
-		  		},
-			RocketTrajectory: function(){
-					return rocket.slideWay;
+		},
+		methods:{
+			StartTimer:function(){
+				this.percent-=0.1;
+				if ( this.percent <= 0 ) {
+				field.DestroyPumpkin(); 
 				}
-			  },
-		  methods: {
-		  	BallReset: function(){
 
-		  			this.X=50;
-					this.Y=300;
-					this.landslideX=2;
-		    		this.landslideY=3;
-		    		this.slideStep=0.5;
-		    		this.down=true;
-		    		this.right=1;
-
-					this.Move();
-		  	},
-		  	Move: function(){
-		  		if (game.lifes>=0 && game.play==true){
-		  		this.CheckCollision();
-			  	if (this.right==1) this.X+=this.landslideX; else if (this.right==-1) this.X-=this.landslideX;
-				if (this.down==true) this.Y+=this.landslideY; else this.Y-=this.landslideY;
-			  	setTimeout(this.Move, 1);
-			  }
+				setTimeout(()=>{this.StartTimer()},1);
 			},
-			CheckCollision: function(){
-				var rocket = document.getElementById('playrocket');
-					 if (this.X >= document.body.clientWidth-30){ this.right=-1; this.BeatEffect();}
- 				else if (this.X <= 1) {this.right=1; this.BeatEffect();}
-				     if (this.Y >= document.body.clientHeight-30) { this.down=false; this.BeatEffect(); game.lifes--;}
-			  	else if (this.Y <= 1) {this.down=true; this.BeatEffect();}
-				if (this.X+15 >= rocket.offsetLeft && this.X+15<=rocket.offsetLeft+rocket.clientWidth && this.Y+30 >= 
-					rocket.offsetTop && this.Y <= rocket.offsetTop+30){
-				this.down=false;
-				this.CorrectTrajectoryWay();
-				this.BeatEffect();
+			SleepTimer:function(){
+				this.percent = 0;
+				setTimeout(()=>{ 	
+					field.SetPumpkin();
+					this.percent = 100;
+					this.StartTimer();	
+				},this.sleep);
+			},
+			StopTimer:function(){
+				this.percent = 0;
+			}
+		}
+	});
+
+
+	var score = new Vue({
+		el: '#score',
+		data:{
+			score: 0
+		},
+		methods:{
+			Increment: function(val){
+				this.score+=val;
+				document.getElementById('score').className='score table-light';
+				setTimeout(()=>{
+				document.getElementById('score').className='score table-simple';
+				},1000);
+			},
+			ResetScore: function(){
+				this.score = 0;
+			}
+		}
+	});
+
+	var menu = new Vue({
+		el: "#winMenu",
+		data:{
+
+		},
+		computed:{
+			wMenuStyle: function(){
+				var width = lenX*a;
+				var height = lenY*a;
+				var top = document.body.clientHeight/lenY;
+				var left = document.body.clientWidth/lenX;
+				//console.log(this.lenX);
+				//console.log(width);
+				 return {
+			    				width: width + "px",
+			    				left: (document.body.clientWidth-width)/2 + "px", 
+			    				top: (document.body.clientHeight-height)/4 + "px",
+			    				height: height + "px",
+				 }
+			}
+		},
+		methods:{
+			SetSnake: function(){
+				document.getElementById('winMenu').className="windowMenu hidden";
+				score.ResetScore();
+				field.SetField();
+				//field.SetSnake();
+				//field.MoveIt();
+			},
+		}
+	});
+
+var field = new Vue({
+	el: '#field',
+	created:function(){
+		this.SetField();
+	},
+	data:{
+		fieldArray:[],
+		apple: -1,
+		pumpkin: -1,
+		snake: { body:[], way: 'E', alive: false}
+	},
+	computed:{
+		lenX:function(){
+			//return parseInt(document.body.clientWidth/35/3*2);
+			return lenX;
+		},
+		lenY: function(){
+			//return parseInt(document.body.clientHeight/35/3*2);
+			return lenY;
+		},
+		FieldStyle: function(){
+			var width = this.lenX*a;
+			var height = this.lenY*a;
+			var top = document.body.clientHeight/this.lenY;
+			var left = document.body.clientWidth/this.lenX;
+			//console.log(this.lenX);
+			//console.log(width);
+			 return {
+		    				width: width + "px",
+		    				left: (document.body.clientWidth-width)/2 + "px", 
+		    				top: (document.body.clientHeight-height)/4 + "px",
+		    				height: height + "px",
+			 }
+		},
+	},
+	methods:{
+		SetField: function () {
+			var id=1;
+			console.log(this.lenX);
+			console.log(this.lenY);
+			for (var i=0; i < this.lenX; i++){
+				for (var j=0; j < this.lenY; j++){
+					this.fieldArray.push({ 
+					id: id++,
+		  			x: i, 
+		  			y: j 
+		  		}); 	
+		  		}	
+		  	}  	
+		  	setTimeout(this.SetSnake,250);
+		  	setTimeout(this.SetApple,250);
+		  	setTimeout(progressbar.SleepTimer(),250);
+		  	setTimeout(this.MoveIt,250);
+		},
+		SetSnake: function(){
+				var headPos = this.Rand(0, 256);
+				this.snake.body.push(headPos);
+				this.snake.body.push(headPos-1);
+				this.snake.way = 'E';
+				this.snake.alive = true;
+				for (var i=0; i<this.snake.body.length;i++)
+				document.getElementById(this.fieldArray[this.snake.body[i]].id).className= "block block-selected";
+		},
+		MoveIt: function(){
+				var snake = this.snake.body;
+				var tail = snake[snake.length-1];
+				var head = this.snake.body[0];
+				var destroy = false;
+
+				if (this.apple>0)document.getElementById(this.apple).className= "block apple";
+				if (this.pumpkin>0)document.getElementById(this.pumpkin).className= "block pumpkin";
+
+				for(var i = 1; i<this.snake.body.length;i++)
+				if (head==this.snake.body[i]) destroy = true;
+
+				if (destroy) this.DestroySnake();
+				else{
+				if (this.snake.way == 'E') {
+					if ((head)%(this.lenX)==0) head-=this.lenX;
+					snake.unshift(head+1);
 				}
-				this.HitBrick();
-			},
-			CorrectTrajectoryWay: function() {		
-				if(this.right==-1 && this.RocketTrajectory==-1 || this.right==1 && this.RocketTrajectory==1)
-					this.landslideX+=this.slideStep; 
-				else if (this.right==-1 && this.RocketTrajectory==1 || this.right==1 && this.RocketTrajectory==-1)
-					this.landslideX-=this.slideStep;
+				if (this.snake.way == 'W') {
+					if ((head-1)%this.lenX==0) head+=this.lenX;
+					snake.unshift(head-1);
+				}
+				if (this.snake.way == 'N') {
+					if ((head-this.lenX)<1) head+=(this.lenY*this.lenX);
+					snake.unshift(head-this.lenX);
+				}
+				if (this.snake.way == 'S') {
+					if ((head+this.lenX)>this.fieldArray.length) head-=(this.lenY*this.lenX);
+					snake.unshift(head+this.lenX);
+				}
+				if ((this.snake.body[0]!=this.apple) && (this.snake.body[0]!=this.pumpkin)) snake.pop();
 				else {
-					if (this.RocketTrajectory!=0){
-					this.right=this.RocketTrajectory;
-					this.landslideX+=this.slideStep; 
-					}	 	
+					if (this.snake.body[0]==this.pumpkin) { score.Increment(Math.round(5*progressbar.percent)); this.DestroyPumpkin(); }
+					if (this.snake.body[0]==this.apple) { score.Increment(100); this.SetApple(); }		
 				}
-				if (this.landslideX==0) this.right=0;
-			},
-			HitBrick: function(){
-				var blockSegment = document.getElementById('bricksblock');
-				for(var i=0; i<bricks.bricks.length; i++){
-					//var brick = document.getElementById(bricks.bricks[i].id);
-					var brick = bricks.bricks[i];
-					if (
-						brick.visible == true
-						&&
-						this.Y >= brick.Y + blockSegment.offsetTop 
-						&& 
-						this.Y <= brick.Y + brick.height + blockSegment.offsetTop
-						&& 
-						this.X >= brick.X + blockSegment.offsetLeft
-						&&  
-						this.X <= brick.X + brick.width + blockSegment.offsetLeft
-						)
-					{
-						this.down=true;
-						this.BeatEffect();
-						bricks.DestroyBrick(brick);
-					}
-					}
-					},
-			BeatEffect: function(){
-			  	document.getElementById('playball').className="ball beat";
-			  	setTimeout(function(){
-					document.getElementById('playball').className="ball";
-				},100);
-		  }
-		  },
 
 
-		});
-
-		var rocket = new Vue({
-			el: '#playrocket',
-			data: {
-			X:50,
-			//width: 400,
-			slideWay: 0,
-			prevPos: 0,
-
-			touch: false,
-			touchPos: 0
-			},
-			computed: {
-				Style: function (){
-			 	return {	left: this.X + "px", width: this.Width + "px"	}
-		  		},
-		  		Width:function(){
-		  			return  document.body.clientWidth/4;
-		  		}
-			},
-			methods: {
-				SetPosition: function(e){
-					this.X=e.pageX-this.Width/2;
-					if (this.X < 0) this.X = 0;
-					else if (this.X+this.Width > document.body.clientWidth) this.X = document.body.clientWidth-this.Width;
-					this.CheckWay();
-		  			this.prevPos=this.X;
-				},
-				CheckWay: function(){
-					var r = document.getElementById('playrocket');
-		  			if (this.X>this.prevPos+15) { this.slideWay = 1; r.className="right";}
-		  			else if (this.X<this.prevPos-15) { this.slideWay = -1; r.className="left";}
-		  			else { this.slideWay = 0; r.className="static";}
-		  		},	
-		  		TouchRocket: function(e){
-				var r = document.getElementById('playrocket');
-		  		var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
-        		startx = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
-        		if (startx>=this.X && startx<=this.X+r.clientWidth) 
-        		{
-        			this.touchPos = startx-this.X;
-        			this.touch=true;
-        		}
-          		else this.touch = false;
-        		e.preventDefault();  
-		  		},
-		  		DragRocket:function(e){
-		  			var touchobj = e.changedTouches[0];
-		  			if (this.touch) this.X = parseInt(touchobj.clientX)-this.touchPos;;
-		  			if (this.X < 0) this.X = 0;
-					else if (this.X+this.Width > document.body.clientWidth) this.X = document.body.clientWidth-this.Width;
-		  			this.CheckWay();
-		  			this.prevPos=this.X;
-					e.preventDefault();
-		  		},
+				document.getElementById(tail).className= "block";
+				document.getElementById(snake[0]).className= "block block-selected";
+				this.clock++;
+			 	setTimeout(this.MoveIt,200);	
+			 	} 	
+		},
+		SetApple:function(){
+			var n = this.Rand(1, 256);
+			var flag = false;
+			for (var i=0; i<this.snake.body.length;i++)
+			if (this.snake.body[i]==n) flag=true;
+			if (!flag) this.apple = n;
+			else this.SetApple();
+		},
+		SetPumpkin:function(){
+			var n = this.Rand(1, 256);
+			var flag = false;
+			for (var i=0; i<this.snake.body.length;i++)
+			if (this.snake.body[i]==n) flag=true;
+			if (n==this.apple) flag=true;
+			if (!flag) this.pumpkin = n;
+			else this.SetPumpkin();
+		},
+		Rand: function (min, max)
+		{
+		    return Math.floor(Math.random()*(max-min+1)+min);
+		},
+		ClickTurn: function(e){
+			var way = this.snake.way;
+			var snake = this.snake.body;
+			var snakehead = document.getElementById(snake[0]);
+/*			
+			if (this.snake.way=='W' || this.snake.way=='E') {
+				if (e.pageY < snakehead.offsetTop) this.snake.way='N';
+				else if (e.pageY > snakehead.offsetTop + snakehead.clientHeight) this.snake.way='S';
 			}
-		});
+			else {
+				if (e.pageX < snakehead.offsetLeft) this.snake.way='W';
+				else if (e.pageX > snakehead.offsetLeft + snakehead.clientWidth) this.snake.way='E';
+			}
+*/
+			console.log(e.keyCode);
+			keys.Turn(e.keyCode);
+		},
+		DestroySnake: function(){	
+			for (var i=0; i<this.snake.body.length;i++)
+				document.getElementById(this.snake.body[i]).className= "block blowed";
+						
+			setTimeout(()=>{
+			this.fieldArray=[];
+			this.snake.body = [];
+			this.snake.alive = false;
+			this.showMenu();
+			},1000)
+		},
+		DestroyPumpkin:function(){
+			document.getElementById(this.pumpkin).className= "block";
+			this.pumpkin =- 1;
+			progressbar.SleepTimer();
+		},
+		showMenu: function(){
+			document.getElementById('winMenu').className="windowMenu showen";
+			progressbar.StopTimer();
+		}
+	}
+});
 
-		addEventListener('mousemove', rocket.SetPosition, false);
-		addEventListener('resize', bricks.CorrectBricks, false );
+	
+var keys = new Vue({
+	el: '#keys',
+	data:{
+		currentWay: ''
+	},
+	computed:{
+		KeyStyle:function(){
+			var proportion = document.getElementById('keys').clientWidth/document.body.clientWidth*100;
 
-		addEventListener('touchstart', rocket.TouchRocket, false);
-    	addEventListener('touchmove', rocket.DragRocket, false);
+			return {
+				left : 50 - (proportion/2) + "%"
+			}
+		}
+	},
+	methods:{
+		Turn: function(keyCode){
+			switch (keyCode){
+				case 119: //EN key 'w'
+				case 1094: //RU key 'ц'
+				this.currentWay='N';
+				
+				document.getElementById('w').className="key pressed";
+				break;
+
+				case 115: //EN key 's'
+				case 1110: //RU key 'ы'
+				case 1099: //UA key 'і'
+				this.currentWay='S';
+
+				document.getElementById('s').className="key pressed";
+				break;
+
+				case 97: //EN key 'a'
+				case 1092: //RU key 'ф'
+				this.currentWay='W';
+
+				document.getElementById('a').className="key pressed";
+				break;
+
+				case 100: //EN key 'd'
+				case 1074: //RU key 'в'
+				this.currentWay='E';
+
+				document.getElementById('d').className="key pressed";
+				break;
+
+				//default:
+			}
+				field.snake.way=this.currentWay; 
+			setTimeout(()=>{this.KeyReset();},250);
+		},
+		KeyReset:function(){
+			switch(this.currentWay){
+			case 'N': document.getElementById('w').className="key"; brake;
+			case 'S': document.getElementById('s').className="key"; brake;
+			case 'W': document.getElementById('a').className="key"; brake;
+			case 'E': document.getElementById('d').className="key"; brake;
+			}
+		}
+	}
+});
+
+		addEventListener('keypress', field.ClickTurn);
+		addEventListener('keyup', keys.KeyReset);
+		//addEventListener('click', field.ClickTurn, false);
+		addEventListener('touchstart', function(){}, false);
+    	addEventListener('touchmove', function(){}, false);
