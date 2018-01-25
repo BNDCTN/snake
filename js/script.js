@@ -315,10 +315,10 @@ var keys = new Vue({
 		},
 		KeyReset:function(){
 			switch(this.currentWay){
-			case 'N': document.getElementById('w').className="key"; brake;
-			case 'S': document.getElementById('s').className="key"; brake;
-			case 'W': document.getElementById('a').className="key"; brake;
-			case 'E': document.getElementById('d').className="key"; brake;
+			case 'N': document.getElementById('w').className="key"; break;
+			case 'S': document.getElementById('s').className="key"; break;
+			case 'W': document.getElementById('a').className="key"; break;
+			case 'E': document.getElementById('d').className="key"; break;
 			}
 		}
 	}
