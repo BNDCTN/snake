@@ -225,17 +225,6 @@ var field = new Vue({
 			var way = this.snake.way;
 			var snake = this.snake.body;
 			var snakehead = document.getElementById(snake[0]);
-/*			
-			if (this.snake.way=='W' || this.snake.way=='E') {
-				if (e.pageY < snakehead.offsetTop) this.snake.way='N';
-				else if (e.pageY > snakehead.offsetTop + snakehead.clientHeight) this.snake.way='S';
-			}
-			else {
-				if (e.pageX < snakehead.offsetLeft) this.snake.way='W';
-				else if (e.pageX > snakehead.offsetLeft + snakehead.clientWidth) this.snake.way='E';
-			}
-*/
-			console.log(e.keyCode);
 			keys.Turn(e.keyCode);
 		},
 		DestroySnake: function(){	
