@@ -13,14 +13,14 @@
 			this.StartTimer();
 		},
 		computed:{
-			ProgBarStyle:function(){
+			ProgBarStyle(){
 				return {
 					width: this.percent + '%'
 				}
 			}
 		},
 		methods:{
-			StartTimer:function(){
+			StartTimer(){
 				this.percent-=0.1;
 				if ( this.percent <= 0 ) {
 				field.DestroyPumpkin(); 
@@ -28,15 +28,15 @@
 
 				setTimeout(()=>{this.StartTimer()},1);
 			},
-			SleepTimer:function(){
+			SleepTimer(){
 				this.percent = 0;
 				setTimeout(()=>{ 	
 					field.SetPumpkin();
-					this.percent = 100;
+					this.percent = 150;
 					this.StartTimer();	
-				},this.sleep);
+				}, this.sleep);
 			},
-			StopTimer:function(){
+			StopTimer(){
 				this.percent = 0;
 			}
 		}
@@ -49,14 +49,14 @@
 			score: 0
 		},
 		methods:{
-			Increment: function(val){
-				this.score+=val;
+			Increment(val){
+				this.score += val;
 				document.getElementById('score').className='score table-light';
 				setTimeout(()=>{
 				document.getElementById('score').className='score table-simple';
 				},1000);
 			},
-			ResetScore: function(){
+			ResetScore(){
 				this.score = 0;
 			}
 		}
@@ -68,13 +68,11 @@
 
 		},
 		computed:{
-			wMenuStyle: function(){
+			wMenuStyle(){
 				var width = lenX*a;
 				var height = lenY*a;
 				var top = document.body.clientHeight/lenY;
 				var left = document.body.clientWidth/lenX;
-				//console.log(this.lenX);
-				//console.log(width);
 				 return {
 			    				width: width + "px",
 			    				left: (document.body.clientWidth-width)/2 + "px", 
@@ -84,7 +82,7 @@
 			}
 		},
 		methods:{
-			SetSnake: function(){
+			SetSnake(){
 				document.getElementById('winMenu').className="windowMenu hidden";
 				score.ResetScore();
 				field.SetField();
@@ -106,34 +104,30 @@ var field = new Vue({
 		snake: { body:[], way: 'E', alive: false}
 	},
 	computed:{
-		lenX:function(){
+		lenX(){
 			//return parseInt(document.body.clientWidth/35/3*2);
 			return lenX;
 		},
-		lenY: function(){
+		lenY(){
 			//return parseInt(document.body.clientHeight/35/3*2);
 			return lenY;
 		},
-		FieldStyle: function(){
-			var width = this.lenX*a;
-			var height = this.lenY*a;
-			var top = document.body.clientHeight/this.lenY;
-			var left = document.body.clientWidth/this.lenX;
-			//console.log(this.lenX);
-			//console.log(width);
-			 return {
+		FieldStyle(){
+			var width = this.lenX * a;
+			var height = this.lenY * a;
+			var top = document.body.clientHeight / this.lenY;
+			var left = document.body.clientWidth / this.lenX;
+			return {
 		    				width: width + "px",
 		    				left: (document.body.clientWidth-width)/2 + "px", 
 		    				top: (document.body.clientHeight-height)/4 + "px",
 		    				height: height + "px",
-			 }
+			}
 		},
 	},
 	methods:{
-		SetField: function () {
+		SetField() {
 			var id=1;
-			console.log(this.lenX);
-			console.log(this.lenY);
 			for (var i=0; i < this.lenX; i++){
 				for (var j=0; j < this.lenY; j++){
 					this.fieldArray.push({ 
@@ -148,16 +142,16 @@ var field = new Vue({
 		  	setTimeout(progressbar.SleepTimer(),250);
 		  	setTimeout(this.MoveIt,250);
 		},
-		SetSnake: function(){
+		SetSnake(){
 				var headPos = this.Rand(0, 256);
 				this.snake.body.push(headPos);
 				this.snake.body.push(headPos-1);
 				this.snake.way = 'E';
 				this.snake.alive = true;
-				for (var i=0; i<this.snake.body.length;i++)
+				for ( var i = 0; i < this.snake.body.length; i++ )
 				document.getElementById(this.fieldArray[this.snake.body[i]].id).className= "block block-selected";
 		},
-		MoveIt: function(){
+		MoveIt(){
 				var snake = this.snake.body;
 				var tail = snake[snake.length-1];
 				var head = this.snake.body[0];
@@ -169,30 +163,38 @@ var field = new Vue({
 				for(var i = 1; i<this.snake.body.length;i++)
 				if (head==this.snake.body[i]) destroy = true;
 
-				if (destroy) this.DestroySnake();
-				else{
-				if (this.snake.way == 'E') {
-					if ((head)%(this.lenX)==0) head-=this.lenX;
-					snake.unshift(head+1);
+				if (destroy) {
+					this.DestroySnake();
 				}
-				if (this.snake.way == 'W') {
-					if ((head-1)%this.lenX==0) head+=this.lenX;
-					snake.unshift(head-1);
-				}
-				if (this.snake.way == 'N') {
-					if ((head-this.lenX)<1) head+=(this.lenY*this.lenX);
-					snake.unshift(head-this.lenX);
-				}
-				if (this.snake.way == 'S') {
-					if ((head+this.lenX)>this.fieldArray.length) head-=(this.lenY*this.lenX);
-					snake.unshift(head+this.lenX);
-				}
-				if ((this.snake.body[0]!=this.apple) && (this.snake.body[0]!=this.pumpkin)) snake.pop();
 				else {
-					if (this.snake.body[0]==this.pumpkin) { score.Increment(Math.round(5*progressbar.percent)); this.DestroyPumpkin(); }
-					if (this.snake.body[0]==this.apple) { score.Increment(100); this.SetApple(); }		
-				}
 
+					switch (this.snake.way){
+						case 'E':
+									if ((head)%(this.lenX)==0) head-=this.lenX;
+									snake.unshift(head+1);
+						break;
+
+						case 'W':
+									if ((head-1)%this.lenX==0) head+=this.lenX;
+									snake.unshift(head-1);
+						break;
+
+						case 'N':
+									if ((head-this.lenX)<1) head+=(this.lenY*this.lenX);
+									snake.unshift(head-this.lenX);
+						break;
+
+						case 'S':
+									if ((head+this.lenX)>this.fieldArray.length) head-=(this.lenY*this.lenX);
+									snake.unshift(head+this.lenX);
+						break;
+					}
+					
+				if ((this.snake.body[0] != this.apple && this.apple) && (this.snake.body[0] != this.pumpkin)) snake.pop();
+				else {
+					if (this.snake.body[0] == this.pumpkin && this.pumpkin) { score.Increment(Math.round(5*progressbar.percent)); this.DestroyPumpkin(); }
+					if (this.snake.body[0] == this.apple  && this.pumpkin) { score.Increment(100); this.SetApple(); }		
+				}
 
 				document.getElementById(tail).className= "block";
 				document.getElementById(snake[0]).className= "block block-selected";
@@ -200,7 +202,7 @@ var field = new Vue({
 			 	setTimeout(this.MoveIt,200);	
 			 	} 	
 		},
-		SetApple:function(){
+		SetApple(){
 			var n = this.Rand(1, 256);
 			var flag = false;
 			for (var i=0; i<this.snake.body.length;i++)
@@ -208,12 +210,12 @@ var field = new Vue({
 			if (!flag) this.apple = n;
 			else this.SetApple();
 		},
-		SetPumpkin:function(){
+		SetPumpkin(){
 			var n = this.Rand(1, 256);
 			var flag = false;
-			for (var i=0; i<this.snake.body.length;i++)
-			if (this.snake.body[i]==n) flag=true;
-			if (n==this.apple) flag=true;
+			for ( var i = 0; i < this.snake.body.length; i++ )
+			if ( this.snake.body[i] == n ) flag=true;
+			if ( n == this.apple ) flag=true;
 			if (!flag) this.pumpkin = n;
 			else this.SetPumpkin();
 		},
@@ -221,13 +223,14 @@ var field = new Vue({
 		{
 		    return Math.floor(Math.random()*(max-min+1)+min);
 		},
-		ClickTurn: function(e){
+		ClickTurn(e){
 			var way = this.snake.way;
 			var snake = this.snake.body;
 			var snakehead = document.getElementById(snake[0]);
+
 			keys.Turn(e.keyCode);
 		},
-		DestroySnake: function(){	
+		DestroySnake(){	
 			for (var i=0; i<this.snake.body.length;i++)
 				document.getElementById(this.snake.body[i]).className= "block blowed";
 						
@@ -238,12 +241,15 @@ var field = new Vue({
 			this.showMenu();
 			},1000)
 		},
-		DestroyPumpkin:function(){
-			document.getElementById(this.pumpkin).className= "block";
-			this.pumpkin =- 1;
-			progressbar.SleepTimer();
+		DestroyPumpkin(){
+			let elPumpkin = document.getElementById(this.pumpkin);
+			if (this.pumpkin && elPumpkin) {
+				elPumpkin.className= "block";
+				this.pumpkin =- 1;
+				progressbar.SleepTimer();
+			}
 		},
-		showMenu: function(){
+		showMenu(){
 			document.getElementById('winMenu').className="windowMenu showen";
 			progressbar.StopTimer();
 		}
@@ -257,7 +263,7 @@ var keys = new Vue({
 		currentWay: ''
 	},
 	computed:{
-		KeyStyle:function(){
+		KeyStyle(){
 			var proportion = document.getElementById('keys').clientWidth/document.body.clientWidth*100;
 
 			return {
@@ -266,7 +272,7 @@ var keys = new Vue({
 		}
 	},
 	methods:{
-		Turn: function(keyCode){
+		Turn(keyCode){
 			switch (keyCode){
 				case 119: //EN key 'w'
 				case 1094: //RU key 'ц'
@@ -302,7 +308,7 @@ var keys = new Vue({
 				field.snake.way=this.currentWay; 
 			setTimeout(()=>{this.KeyReset();},250);
 		},
-		KeyReset:function(){
+		KeyReset(){
 			switch(this.currentWay){
 			case 'N': document.getElementById('w').className="key"; break;
 			case 'S': document.getElementById('s').className="key"; break;
