@@ -1,15 +1,16 @@
-		*{
+		* {
 			padding: 0;
 			margin: 0;
 		}
-		body{
-			width:99%;
+
+		body {
+			width: 99%;
 			height: 99vh;
 			background-color: #333;
 			font-family: sans-serif;
 		}
 
-		#field{
+		#field {
 			position: absolute;
 			display: block;
 			background-color: #444;
@@ -23,7 +24,7 @@
 			box-sizing: border-box;
 		}
 
-		.score{
+		.score {
 			position: absolute;
 			display: block;
 			top: 3%;
@@ -37,22 +38,25 @@
 			line-height: 40px;
 			transition: all 1s;
 		}
-		.score.table-light{
+
+		.score.table-light {
 			background-color: #898;
 		}
-		.score.table-simple{
+
+		.score.table-simple {
 			background-color: #777;
 		}
 
 
-		#keys{
+		#keys {
 			position: absolute;
 			display: block;
 			//background-color: #aaa;
 			//opacity: 0.25;
 			top: 75%;
 		}
-		#keyswindow{
+
+		#keyswindow {
 			position: absolute;
 			border: 1px solid #fff;
 			border-radius: 4px;
@@ -62,7 +66,7 @@
 			height: 100%;
 		}
 
-		.key{
+		.key {
 			display: inline-block;
 			border: 1px solid #ccc;
 			border-radius: 4px;
@@ -73,19 +77,22 @@
 			margin: 0px;
 			z-index: 1;
 		}
-		.key.pressed{
+
+		.key.pressed {
 			background-color: #ccc;
 			opacity: 1;
 		}
-		#line{
+
+		#line {
 			margin: 4px;
 		}
-		#w{
-			margin-left:25%;
+
+		#w {
+			margin-left: 25%;
 		}
 
 
-		.block{
+		.block {
 			position: relative;
 			display: inline-block;
 			height: 32px;
@@ -97,34 +104,38 @@
 			opacity: 0.25;
 			border: 1px solid #aaa;
 			transition: transform 1s, opacity 1s;
-			-webkit-box-shadow: inset 0px 0px 149px 0px rgba(100,100,100,0.75);
-			-moz-box-shadow: inset 0px 0px 149px 0px rgba(100,10,100,100.75);
-			box-shadow: inset 0px 0px 149px 0px rgba(100,100,100,0.75);
+			-webkit-box-shadow: inset 0px 0px 149px 0px rgba(100, 100, 100, 0.75);
+			-moz-box-shadow: inset 0px 0px 149px 0px rgba(100, 10, 100, 100.75);
+			box-shadow: inset 0px 0px 149px 0px rgba(100, 100, 100, 0.75);
 		}
-		.block.block-selected{
+
+		.block.block-selected {
 			background-color: #fff;
 			opacity: 1;
 			transform: scale(1, 1);
 		}
-		.block.apple{
+
+		.block.apple {
 			background-color: #f22;
 			opacity: 1;
 			transform: scale(0.5, 0.5);
 			border-radius: 50%;
 		}
-		.block.pumpkin{
+
+		.block.pumpkin {
 			background-color: #f50;
 			opacity: 1;
 			transform: scale(1, 1);
 			border-radius: 50%;
 		}
-		.block.blowed{
+
+		.block.blowed {
 			background-color: #f22;
 			opacity: 0;
 			transform: scale(2, 2);
 		}
 
-		.windowMenu{
+		.windowMenu {
 			position: absolute;
 			display: block;
 			border-radius: 5px;
@@ -136,13 +147,16 @@
 			z-index: 1;
 			opacity: 0.75;
 		}
-		.windowMenu.hidden{
-			visibility:hidden;
+
+		.windowMenu.hidden {
+			visibility: hidden;
 		}
-		.windowMenu.showen{
-			visibility:visible;
+
+		.windowMenu.showen {
+			visibility: visible;
 		}
-		.simpleButton{
+
+		.simpleButton {
 			border: none;
 			background: #555;
 			width: 50%;
@@ -152,11 +166,12 @@
 			font-size: 24px;
 			color: #222;
 		}
-		.simpleButton:hover{
+
+		.simpleButton:hover {
 			background: #777;
 		}
 
-		#progressbar{
+		#progressbar {
 			position: absolute;
 			display: block;
 			width: 100%;

@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Snake</title>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.4/vue.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
+
 <body>
 
-<div id="score" class="score table-simple">{{ score }}</div>
+	<div id="score" class="score table-simple">{{ score }}</div>
 
-<div id="progressbar" v-bind:style="ProgBarStyle"></div>
+	<div id="progressbar" v-bind:style="ProgBarStyle"></div>
 
-<div class="windowMenu hidden" id="winMenu" v-bind:style="wMenuStyle">
-	<button class="simpleButton" v-on:click="SetSnake">RESTART</button>
-</div>
+	<div class="windowMenu hidden" id="winMenu" v-bind:style="wMenuStyle">
+		<button class="simpleButton" v-on:click="SetSnake">RESTART</button>
+	</div>
 
-<div id="field" v-bind:style="FieldStyle">
-	<div class="block" v-for="b in fieldArray" v-bind:id="b.id"></div>
-</div>
+	<div id="field" v-bind:style="FieldStyle">
+		<div class="block" v-for="b in fieldArray" v-bind:id="b.id"></div>
+	</div>
 
-<div id="keys" v-bind:style="KeyStyle">
-	<div id="keyswindow"></div>
-	<section id="line">
-		<div id="w" class="key" v-on:click="Turn(119)">W</div>
-	</section>
-	<section id="line">
-		<div id="a" class="key" v-on:click="Turn(97)">A</div>
-		<div id="s" class="key" v-on:click="Turn(115)">S</div>
-		<div id="d" class="key" v-on:click="Turn(100)">D</div>
-	</section>
-</div>
-
+	<div id="keys" v-bind:style="KeyStyle">
+		<div id="keyswindow"></div>
+		<section id="line">
+			<div id="w" class="key" v-on:click="Turn(119)">W</div>
+		</section>
+		<section id="line">
+			<div id="a" class="key" v-on:click="Turn(97)">A</div>
+			<div id="s" class="key" v-on:click="Turn(115)">S</div>
+			<div id="d" class="key" v-on:click="Turn(100)">D</div>
+		</section>
+	</div>
 </body>
 <script type="text/javascript" src="js/script.js"></script>
+
 </html>
